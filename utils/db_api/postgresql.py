@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Union
 
 import asyncpg
@@ -46,7 +47,6 @@ class Database:
                     result = await connection.execute(command, *args)
             return result
 
-
     @staticmethod
     def format_args(sql, parameters: dict):
         sql += " AND ".join([
@@ -73,3 +73,74 @@ class Database:
         sql = "SELECT * FROM Users WHERE "
         sql, parameters = self.format_args(sql, parameters=kwargs)
         return await self.execute(sql, *parameters, fetch=True)
+
+    async def update_user(self, user_id, **kwargs):
+        sql = "UPDATE Users SET "
+        parameters = {}
+        for i, (key, value) in enumerate(kwargs.items(), start=1):
+            sql += f"{key} = ${i}, "
+            parameters[key] = value
+        sql = sql[:-2] + " WHERE id = ${}".format(len(parameters) + 1)
+        parameters["id"] = user_id
+        return await self.execute(sql, *parameters.values(), execute=True)
+
+    async def delete_user(self, user_id):
+        sql = "DELETE FROM Users WHERE id = $1"
+        return await self.execute(sql, user_id, execute=True)
+
+        # CRUD operations for Order model
+
+    async def create_order(self, user_id, products):
+        sql = "INSERT INTO Orders (user_id, products) VALUES($1, $2) RETURNING *"
+        return await self.execute(sql, user_id, products, fetchrow=True)
+
+    async def select_order(self, **kwargs):
+        sql = "SELECT * FROM Orders WHERE "
+        sql, parameters = self.format_args(sql, parameters=kwargs)
+        return await self.execute(sql, *parameters, fetch=True)
+
+    async def select_all_orders(self):
+        sql = "SELECT * FROM Orders"
+        return await self.execute(sql, fetch=True)
+
+    async def update_order(self, order_id, **kwargs):
+        sql = "UPDATE Orders SET "
+        parameters = {}
+        for i, (key, value) in enumerate(kwargs.items(), start=1):
+            sql += f"{key} = ${i}, "
+            parameters[key] = value
+        sql = sql[:-2] + " WHERE id = ${}".format(len(parameters) + 1)
+        parameters["id"] = order_id
+        return await self.execute(sql, *parameters.values(), execute=True)
+
+    async def delete_order(self, order_id):
+        sql = "DELETE FROM Orders WHERE id = $1"
+        return await self.execute(sql, order_id, execute=True)
+
+    # CRUD operations for Stock model
+    async def create_stock(self, product_name, image_id, description, time_limit, created_at=datetime.now()):
+        sql = "INSERT INTO Stock (product_name, image_id, description, time_limit, created_at) VALUES($1, $2, $3, $4, $5) RETURNING *"
+        return await self.execute(sql, product_name, image_id, description, time_limit, created_at, fetchrow=True)
+
+    async def select_stock(self, **kwargs):
+        sql = "SELECT * FROM Stock WHERE "
+        sql, parameters = self.format_args(sql, parameters=kwargs)
+        return await self.execute(sql, *parameters, fetch=True)
+
+    async def select_all_stocks(self):
+        sql = "SELECT * FROM Stock"
+        return await self.execute(sql, fetch=True)
+
+    async def update_stock(self, stock_id, **kwargs):
+        sql = "UPDATE Stock SET "
+        parameters = {}
+        for i, (key, value) in enumerate(kwargs.items(), start=1):
+            sql += f"{key} = ${i}, "
+            parameters[key] = value
+        sql = sql[:-2] + " WHERE id = ${}".format(len(parameters) + 1)
+        parameters["id"] = stock_id
+        return await self.execute(sql, *parameters.values(), execute=True)
+
+    async def delete_stock(self, stock_id):
+        sql = "DELETE FROM Stock WHERE id = $1"
+        return await self.execute(sql, stock_id, execute=True)
