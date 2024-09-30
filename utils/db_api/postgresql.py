@@ -90,9 +90,9 @@ class Database:
 
         # CRUD operations for Order model
 
-    async def create_order(self, user_id, products):
-        sql = "INSERT INTO Orders (user_id, products) VALUES($1, $2) RETURNING *"
-        return await self.execute(sql, user_id, products, fetchrow=True)
+    async def create_order(self, user_id, products, created_at=datetime.now()):
+        sql = "INSERT INTO Orders (user_id, products, created_at) VALUES($1, $2, $3) RETURNING *"
+        return await self.execute(sql, user_id, products, created_at, fetchrow=True)
 
     async def select_order(self, **kwargs):
         sql = "SELECT * FROM Orders WHERE "

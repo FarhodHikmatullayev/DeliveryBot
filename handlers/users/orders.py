@@ -105,14 +105,14 @@ async def create_and_send_order(message: types.Message, state: FSMContext):
         products=products,
     )
 
-    # text = (f"🆕 Yangi buyurtma\n"
-    #         f"📦 Mahsulotlar:\n"
-    #         f"{products}\n"
-    #         f"🏠 Manzil: {location}\n"
-    #         f"👤 Buyurtma egasi: {user['full_name']}\n"
-    #         f"☎️ Tel: {phone_number}\n"
-    #         f"⏱️ Vaqt: {order['created_at'].strftime('%d/%m/%Y %H:%M')}\n")
-    # await bot.send_message(chat_id=, text=text)
+    text = (f"🆕 Yangi buyurtma\n"
+            f"📦 Mahsulotlar:\n"
+            f"{products}\n"
+            f"🏠 Manzil: {location}\n"
+            f"👤 Buyurtma egasi: {user['full_name']}\n"
+            f"☎️ Tel: {phone_number}\n"
+            f"⏱️ Vaqt: {order['created_at'].strftime('%d/%m/%Y %H:%M')}\n")
+    await bot.send_message(chat_id=5757849246, text=text)
 
     await message.answer(text="✅ Buyurtmangiz yuborildi,\n"
                               "Tez orada adminlarimiz sizga bog'lanishadi 🙂", reply_markup=back_to_menu)
@@ -128,6 +128,7 @@ async def get_location(message: types.Message, state: FSMContext):
     users = await db.select_users(telegram_id=user_telegram_id)
     user = users[0]
     phone_number = user["phone"]
+    await state.update_data(phone_number=phone_number)
     text = (f"Sizning raqamingiz hali ham {phone_number}mi?\n"
             f"👇 Iltimos agar raqamingiz o'zgarmagan bo'lsa Davom etish tugmasini bosing\n"
             f"👇 Agar raqamingiz o'zgargan bo'lsa, Raqamni o'zgartirish tugmasini bosing")
