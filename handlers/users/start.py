@@ -14,7 +14,7 @@ async def bot_start(message: types.Message, state: FSMContext):
         await state.finish()
     except:
         pass
-    await message.answer(text=f"{message.chat.id}")
+    # await message.answer(text=f"{message.chat.id}")
     user_telegram_id = message.from_user.id
     users = await db.select_users(telegram_id=user_telegram_id)
     if users:

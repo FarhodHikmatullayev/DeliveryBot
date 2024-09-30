@@ -112,7 +112,7 @@ async def create_and_send_order(message: types.Message, state: FSMContext):
             f"👤 Buyurtma egasi: {user['full_name']}\n"
             f"☎️ Tel: {phone_number}\n"
             f"⏱️ Vaqt: {order['created_at'].strftime('%d/%m/%Y %H:%M')}\n")
-    await bot.send_message(chat_id=5757849246, text=text)
+    await bot.send_message(chat_id=-1002358586244, text=text)
 
     await message.answer(text="✅ Buyurtmangiz yuborildi,\n"
                               "Tez orada adminlarimiz sizga bog'lanishadi 🙂", reply_markup=back_to_menu)
