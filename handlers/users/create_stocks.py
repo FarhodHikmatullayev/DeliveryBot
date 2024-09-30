@@ -4,6 +4,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from data.config import ADMINS
+from keyboards.default.confirm_stocks import create_stock_keyboard
 from keyboards.default.main_menu import back_to_menu
 from keyboards.default.stocks_for_admin import actions_keyboard_for_stocks
 from keyboards.inline.confirmation import confirm_keyboard
@@ -20,13 +21,14 @@ async def create_stocks(message: types.Message, state: FSMContext):
     await message.answer(text="Kerakli amalni tanlang 👇", reply_markup=actions_keyboard_for_stocks)
 
 
+@dp.message_handler(text="➕ Yana aksiya qo'shish", state="*")
 @dp.message_handler(text="✨ Yangi yaratish", state='*')
 async def create_stocks(message: types.Message, state: FSMContext):
     try:
         await state.finish()
     except:
         pass
-    await message.answer(text="Mahsulot nomini kiriting", reply_markup=back_to_menu)
+    await message.answer(text="✏️ Mahsulot nomini kiriting", reply_markup=back_to_menu)
     await CreateStockState.product_name.set()
 
 
@@ -34,7 +36,7 @@ async def create_stocks(message: types.Message, state: FSMContext):
 async def get_product_name(message: types.Message, state: FSMContext):
     product_name = message.text
     await state.update_data(product_name=product_name)
-    await message.answer(text="Aksiya uchun rasm kiriting", reply_markup=back_to_menu)
+    await message.answer(text="🖼️ Aksiya uchun rasm kiriting", reply_markup=back_to_menu)
     await CreateStockState.image_id.set()
 
 
@@ -43,13 +45,13 @@ async def get_image_id(message: types.Message, state: FSMContext):
     image_id = message.photo[-1].file_id
     await state.update_data(image_id=image_id)
     await state.update_data(image_id=image_id)
-    await message.answer(text="Aksiya uchun izoh yozing", reply_markup=back_to_menu)
+    await message.answer(text="📝 Aksiya uchun izoh yozing", reply_markup=back_to_menu)
     await CreateStockState.description.set()
 
 
 @dp.message_handler(content_types=types.ContentType.ANY, state=CreateStockState.image_id)
 async def get_image_id(message: types.Message, state: FSMContext):
-    await message.answer(text="Siz rasm kiritmadingiz\n"
+    await message.answer(text="⚠️ Siz rasm kiritmadingiz\n"
                               "Iltimos, rasm kiriting", reply_markup=back_to_menu)
 
 
@@ -57,7 +59,7 @@ async def get_image_id(message: types.Message, state: FSMContext):
 async def get_description(message: types.Message, state: FSMContext):
     description = message.text
     await state.update_data(description=description)
-    await message.answer(text="Ushbu aksiya qancha muddat amal qiladi?\n"
+    await message.answer(text="⏱️ Ushbu aksiya qancha muddat amal qiladi?\n"
                               "Masalan: (12 soat, 1 kun, 2 kun, 3 oy, 4 yil)")
     await CreateStockState.time_limit.set()
 
@@ -76,14 +78,14 @@ async def create_stock(call: types.CallbackQuery, state: FSMContext):
         description=description,
         time_limit=time_limit
     )
-    await call.message.answer(text="Aksiya saqlandi", reply_markup=back_to_menu)
+    await call.message.answer(text="✅ Aksiya saqlandi", reply_markup=create_stock_keyboard)
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
     await state.finish()
 
 
 @dp.callback_query_handler(text='no', state=CreateStockState.time_limit)
 async def cancel_creating_stock(call: types.CallbackQuery, state: FSMContext):
-    await call.message.answer(text="Saqlashni rad etdingiz", reply_markup=back_to_menu)
+    await call.message.answer(text="❌ Saqlashni rad etdingiz", reply_markup=back_to_menu)
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
     await state.finish()
 

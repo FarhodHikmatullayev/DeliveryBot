@@ -76,7 +76,7 @@ async def get_product_name(message: types.Message, state: FSMContext):
             photo=stock_image_id,
             caption=text,
         )
-        await message.answer(text="💬 Stockni o'shirilsinmi?\n"
+        await message.answer(text="💬 Aksiyani o'shirilsinmi?\n"
                                   "O'chirish tumasini bosing 👇", reply_markup=delete_stock_keyboard)
 
     else:
