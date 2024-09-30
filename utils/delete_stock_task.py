@@ -27,7 +27,7 @@ async def delete_stocks():
                 text = (f"🛍️ Mahsulot nomi: {stock_product_name} \n"
                         f"⏰ Aksiya muddati tugadi\n"
                         f"🗑️ Aksiya o'chirib yuborildi")
-                print(text)
+                # print(text)
                 for admin in ADMINS:
                     try:
                         await bot.send_message(chat_id=admin, text=text)
