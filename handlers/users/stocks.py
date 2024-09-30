@@ -1,44 +1,9 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
+from keyboards.default.main_menu import back_to_menu
 from keyboards.inline.stocks_keyboard import stocks_inline_keyboard, stocks_callback_data
 from loader import dp, db, bot
-
-
-async def send_stocks_one_by_one(*stock_list, message=False, call=False, tr=0):
-    stock_id = stock_list[0][tr]
-    stocks = await db.select_stock(id=stock_id)
-    while not stocks:
-        tr += 1
-        stock_id = stock_list[tr]
-        stocks = await db.select_stock(id=stock_id)
-    stock = stocks[0]
-    image = stock['image_id']
-    product_name = stock['product_name']
-    description = stock['description']
-    time_limit = stock['time_limit']
-    created_at = stock['created_at']
-    limit = created_at + time_limit
-
-    text = (f"🛒 Mahsulot: {product_name}\n"
-            f"📃 Izoh: {description}\n"
-            f"⏱️ Aksiya tugash vaqti: {limit.strftime('%d - %B %H:%M').lstrip('0')}")
-
-    markup = await stocks_inline_keyboard(stock_tr=tr, stocks=stock_list)
-
-    if message:
-        await message.answer_photo(
-            photo=image,
-            caption=text,
-            reply_markup=markup
-        )
-    elif call:
-        await call.message.answer_photo(
-            photo=image,
-            caption=text,
-            reply_markup=markup
-        )
-        await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
 
 
 @dp.message_handler(text="💰 Aksiyalar", state="*")
@@ -48,6 +13,9 @@ async def get_stocks(message: types.Message, state: FSMContext):
     except:
         pass
     stocks = await db.select_all_stocks()
+    if not stocks:
+        await message.answer("Hali aksiyalar mavjud emas", reply_markup=back_to_menu)
+        return
     stocks_list = []
     for stock in stocks:
         stocks_list.append(stock['id'])
