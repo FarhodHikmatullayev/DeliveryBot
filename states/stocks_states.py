@@ -14,3 +14,7 @@ class UpdateStockState(StatesGroup):
     image_id = State()
     description = State()
     time_limit = State()
+
+
+class DeleteStockState(StatesGroup):
+    product_name = State()

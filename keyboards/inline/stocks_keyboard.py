@@ -12,11 +12,11 @@ async def stocks_inline_keyboard(stock_tr: int, stocks_list: List[int]):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="<<",
+                    text="🔙 Orqaga",
                     callback_data=stocks_callback_data.new(tr=stock_tr - 1, stocks=stocks_list)
                 ),
                 InlineKeyboardButton(
-                    text=">>",
+                    text="🔜 Oldinga",
                     callback_data=stocks_callback_data.new(tr=stock_tr + 1, stocks=stocks_list)
                 )
             ]

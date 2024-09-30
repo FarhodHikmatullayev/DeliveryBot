@@ -24,7 +24,7 @@ async def send_stocks_one_by_one(*stock_list, message=False, call=False, tr=0):
 
     text = (f"🛒 Mahsulot: {product_name}\n"
             f"📃 Izoh: {description}\n"
-            f"⏱️ Aksiya tugash vaqti: {limit}")
+            f"⏱️ Aksiya tugash vaqti: {limit.strftime('%d - %B %H:%M').lstrip('0')}")
 
     markup = await stocks_inline_keyboard(stock_tr=tr, stocks=stock_list)
 
@@ -72,7 +72,7 @@ async def get_stocks(message: types.Message, state: FSMContext):
 
     text = (f"🛒 Mahsulot: {product_name}\n"
             f"📃 Izoh: {description}\n"
-            f"⏱️ Aksiya tugash vaqti: {limit}")
+            f"⏱️ Aksiya tugash vaqti: {limit.strftime('%d - %B %H:%M').lstrip('0')}")
 
     markup = await stocks_inline_keyboard(stock_tr=tr, stocks_list=stocks_list)
 
@@ -91,6 +91,12 @@ async def next_or_previous_stocks(call: types.CallbackQuery, callback_data: dict
     stocks_list = stocks_list.split(', ')
     stocks_list = list(map(int, stocks_list))
 
+    len_stock_list = len(stocks_list)
+    if tr >= len_stock_list:
+        tr = 0
+    elif tr < 0:
+        tr = len_stock_list - 1
+
     stock_id = stocks_list[tr]
 
     stocks = await db.select_stock(id=stock_id)
@@ -108,7 +114,7 @@ async def next_or_previous_stocks(call: types.CallbackQuery, callback_data: dict
 
     text = (f"🛒 Mahsulot: {product_name}\n"
             f"📃 Izoh: {description}\n"
-            f"⏱️ Aksiya tugash vaqti: {limit}")
+            f"⏱️ Aksiya tugash vaqti: {limit.strftime('%d - %B %H:%M').lstrip('0')}")
 
     markup = await stocks_inline_keyboard(stock_tr=tr, stocks_list=stocks_list)
 
