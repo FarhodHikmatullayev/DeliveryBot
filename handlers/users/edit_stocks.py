@@ -2,6 +2,7 @@ import datetime
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from pytz import timezone
 
 from keyboards.default.confirm_stocks import edit_stock_keyboard, next_keyboard_button, create_stock_keyboard
 from keyboards.default.main_menu import back_to_menu
@@ -59,6 +60,7 @@ async def get_product_name(message: types.Message, state: FSMContext):
         stock_description = stock['description']
         stock_image_id = stock['image_id']
         stock_created_time = stock['created_at']
+        stock_created_time += datetime.timedelta(hours=5)
 
         await state.update_data(stock_id=stock_id)
         await state.update_data(product_name=product_name)

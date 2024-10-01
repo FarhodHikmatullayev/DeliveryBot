@@ -1,3 +1,5 @@
+import datetime
+
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
@@ -66,6 +68,7 @@ async def get_product_name(message: types.Message, state: FSMContext):
         stock_description = stock['description']
         stock_image_id = stock['image_id']
         stock_created_time = stock['created_at']
+        stock_created_time += datetime.timedelta(hours=5)
 
         text = (f"🛒 Mahsulot: {product_name}\n"
                 f"📃 Izoh: {stock_description}\n"

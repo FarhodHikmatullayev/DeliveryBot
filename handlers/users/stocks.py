@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
@@ -35,10 +37,11 @@ async def get_stocks(message: types.Message, state: FSMContext):
     time_limit = stock['time_limit']
     created_at = stock['created_at']
     limit = created_at + time_limit
+    limit = limit + timedelta(hours=5)
 
     text = (f"🛒 Mahsulot: {product_name}\n"
             f"📃 Izoh: {description}\n"
-            f"⏱️ Aksiya tugash vaqti: {limit.strftime('%d - %B %H:%M').lstrip('0')}")
+            f"⏱️ Aksiya tugash vaqti: {(limit).strftime('%d - %B %H:%M').lstrip('0')}")
 
     markup = await stocks_inline_keyboard(stock_tr=tr, stocks_list=stocks_list)
 
@@ -77,6 +80,7 @@ async def next_or_previous_stocks(call: types.CallbackQuery, callback_data: dict
     time_limit = stock['time_limit']
     created_at = stock['created_at']
     limit = created_at + time_limit
+    limit = limit + timedelta(hours=5)
 
     text = (f"🛒 Mahsulot: {product_name}\n"
             f"📃 Izoh: {description}\n"

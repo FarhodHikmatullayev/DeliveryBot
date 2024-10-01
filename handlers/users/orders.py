@@ -1,7 +1,9 @@
+from datetime import datetime
 from email.policy import default
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from asyncpg.pgproto.pgproto import timedelta
 
 from keyboards.default.confirm_creating_order import confirm_order, confirm_phone_number, send_order
 from keyboards.default.main_menu import back_to_menu
@@ -104,14 +106,13 @@ async def create_and_send_order(message: types.Message, state: FSMContext):
         user_id=user['id'],
         products=products,
     )
-
     text = (f"🆕 Yangi buyurtma\n"
             f"📦 Mahsulotlar:\n"
             f"{products}\n"
             f"🏠 Manzil: {location}\n"
             f"👤 Buyurtma egasi: {user['full_name']}\n"
             f"☎️ Tel: {phone_number}\n"
-            f"⏱️ Vaqt: {order['created_at'].strftime('%d/%m/%Y %H:%M')}\n")
+            f"⏱️ Vaqt: {(order['created_at'] + timedelta(hours=5)).strftime('%d/%m/%Y %H:%M')}\n")
     await bot.send_message(chat_id=-1002358586244, text=text)
 
     await message.answer(text="✅ Buyurtmangiz yuborildi,\n"
