@@ -34,4 +34,4 @@ async def delete_stocks():
 
                     except Exception as err:
                         logging.exception(err)
-        # await asyncio.sleep(60)
+        await asyncio.sleep(60)

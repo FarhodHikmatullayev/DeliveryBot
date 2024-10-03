@@ -145,7 +145,8 @@ async def edit_stock(call: types.CallbackQuery, state: FSMContext):
         product_name=product_name,
         image_id=image_id,
         description=description,
-        time_limit=time_limit
+        time_limit=time_limit,
+        created_at=datetime.datetime.now()
     )
     await call.message.answer(text="✅ Aksiya muvaffaqiyatli o'zgartirildi", reply_markup=back_to_menu)
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
