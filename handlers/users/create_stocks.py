@@ -28,7 +28,7 @@ async def create_stocks(message: types.Message, state: FSMContext):
         await state.finish()
     except:
         pass
-    await message.answer(text="✏️ Mahsulot nomini kiriting", reply_markup=back_to_menu)
+    await message.answer(text="✏️ Aksiya nomini kiriting", reply_markup=back_to_menu)
     await CreateStockState.product_name.set()
 
 
@@ -67,7 +67,7 @@ async def get_link(message: types.Message, state: FSMContext):
     await state.update_data(link=link)
     data = await state.get_data()
     product_name = data.get('product_name')
-    text = (f"🛒 Mahsulot nomi: {product_name}\n"
-            f"🔗 Mahsulot: {link}")
+    text = (f"🛒 Aksiya nomi: {product_name}\n"
+            f"🔗 {link}")
     await message.answer(text=text)
     await message.answer(text="Saqlashni xohlaysizmi? ", reply_markup=confirm_keyboard)

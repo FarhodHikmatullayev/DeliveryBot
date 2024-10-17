@@ -16,8 +16,8 @@ from data.config import ADMINS
 
 @dp.message_handler(text="🖋️ O'zgartirish", state=UpdateStockState.stock_id)
 async def update_stock(message: types.Message, state: FSMContext):
-    await message.answer(text="📝 Aksiyadagi mahsulot uchun yangi nom kiriting.\n"
-                              "Agar mahsulot nomini o'zgartirmoqchi bo'lmasangiz 'Keyingi' tugmasini bosing 👇",
+    await message.answer(text="📝 Aksiya uchun yangi nom kiriting.\n"
+                              "Agar nomini o'zgartirmoqchi bo'lmasangiz 'Keyingi' tugmasini bosing 👇",
                          reply_markup=next_keyboard_button)
     await UpdateStockState.product_name.set()
 
@@ -62,7 +62,7 @@ async def get_product_name(message: types.Message, state: FSMContext):
         await state.update_data(product_name=product_name)
         await state.update_data(link=stock_link)
 
-        text = (f"🛒 Mahsulot: {product_name}\n"
+        text = (f"🛒 Aksiya nomi: {product_name}\n"
                 f"📃 {stock_link}\n")
 
         await message.answer(
@@ -120,7 +120,7 @@ async def get_new_link(message: types.Message, state: FSMContext):
     product_name = data.get('product_name')
 
     await message.answer(text="Aksiya o'zgarishlardan so'ng quyidagicha bo'ladi👇")
-    text = (f"🛒 Mahsulot nomi: {product_name}\n"
-            f"📃 Mahsulot: {link}")
+    text = (f"🛒 Aksiya nomi: {product_name}\n"
+            f"📃 {link}")
     await message.answer(text=text)
     await message.answer(text="Saqlashni xohlaysizmi? ", reply_markup=confirm_keyboard)

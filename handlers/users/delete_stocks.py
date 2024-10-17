@@ -64,7 +64,7 @@ async def get_product_name(message: types.Message, state: FSMContext):
         products_url = stock['products_url']
 
 
-        text = (f"🛒 Mahsulot: {product_name}\n"
+        text = (f"🛒 Aksiya nomi: {product_name}\n"
                 f"📃 Link: {products_url}\n")
 
         await message.answer(

@@ -33,7 +33,7 @@ async def get_stocks(message: types.Message, state: FSMContext):
     product_name = stock['product_name']
 
     text = (f"📃 {products_url}\n"
-            f"🛒 Mahsulot: {product_name}\n")
+            f"🛒 Aksiya nomi: {product_name}\n")
 
     markup = await stocks_inline_keyboard(stock_tr=tr, stocks_list=stocks_list)
 
@@ -69,7 +69,7 @@ async def next_or_previous_stocks(call: types.CallbackQuery, callback_data: dict
     product_name = stock['product_name']
 
     text = (f"📃 {products_url}\n"
-            f"🛒 Mahsulot: {product_name}\n")
+            f"🛒 Aksiya nomi: {product_name}\n")
 
     markup = await stocks_inline_keyboard(stock_tr=tr, stocks_list=stocks_list)
 
