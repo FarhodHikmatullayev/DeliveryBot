@@ -12,10 +12,10 @@ menu_for_admins = ReplyKeyboardMarkup(
     resize_keyboard=True,
     keyboard=[
         [
-            KeyboardButton(text="💰 Aksiyalar"),
+            KeyboardButton(text="🛒 Buyurtma berish"),
         ],
         [
-            KeyboardButton(text="🛒 Buyurtma berish"),
+            KeyboardButton(text="💰 Aksiyalar"),
         ],
         [
             KeyboardButton(text="⚙️ Aksiyalarni boshqarish"),
@@ -27,10 +27,10 @@ basic_menu = ReplyKeyboardMarkup(
     resize_keyboard=True,
     keyboard=[
         [
-            KeyboardButton(text="💰 Aksiyalar"),
+            KeyboardButton(text="🛒 Buyurtma berish"),
         ],
         [
-            KeyboardButton(text="🛒 Buyurtma berish"),
+            KeyboardButton(text="💰 Aksiyalar"),
         ],
     ]
 )
