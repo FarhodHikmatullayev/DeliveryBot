@@ -155,8 +155,8 @@ async def get_phone_number(message: types.Message, state: FSMContext):
 @dp.message_handler(state=CreateOrderState.payment)
 async def get_payment_option(message: types.Message, state: FSMContext):
     payment = message.text
-    if payment == "Naqt":
-        payment_method = 'naqt'
+    if payment == "Naqd":
+        payment_method = 'naqd'
     elif payment == "Terminal (Uzcard)":
         payment_method = 'terminal'
     elif payment == "Click":

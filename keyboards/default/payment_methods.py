@@ -4,7 +4,7 @@ payment_methods_default_keyboard = ReplyKeyboardMarkup(
     resize_keyboard=True,
     keyboard=[
         [
-            KeyboardButton(text="Naqt"),
+            KeyboardButton(text="Naqd"),
         ],
         [
             KeyboardButton(text="Terminal (Uzcard)"),
