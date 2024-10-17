@@ -117,9 +117,9 @@ class Database:
         return await self.execute(sql, order_id, execute=True)
 
     # CRUD operations for Stock model
-    async def create_stock(self, product_name, products_url):
-        sql = "INSERT INTO Stock (product_name, products_url) VALUES($1, $2) RETURNING *"
-        return await self.execute(sql, product_name, products_url, fetchrow=True)
+    async def create_stock(self, product_name, products_url, created_at=datetime.now()):
+        sql = "INSERT INTO Stock (product_name, products_url, created_at) VALUES($1, $2, $3) RETURNING *"
+        return await self.execute(sql, product_name, products_url, created_at, fetchrow=True)
 
     async def select_stock(self, **kwargs):
         sql = "SELECT * FROM Stock WHERE "
