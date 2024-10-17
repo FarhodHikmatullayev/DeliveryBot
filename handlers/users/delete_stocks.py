@@ -61,20 +61,14 @@ async def get_product_name(message: types.Message, state: FSMContext):
     stocks = await db.select_stock(product_name=product_name)
     if stocks:
         stock = stocks[0]
-        stock_time_limit = stock['time_limit']
-        stock_description = stock['description']
-        stock_image_id = stock['image_id']
-        stock_created_time = stock['created_at']
-        stock_created_time += datetime.timedelta(hours=5)
+        products_url = stock['products_url']
+
 
         text = (f"🛒 Mahsulot: {product_name}\n"
-                f"📃 Izoh: {stock_description}\n"
-                f"⏱️ Aksiya aktivlik muddati: {stock_time_limit}\n"
-                f"📆 Aksiya yaratilgan vaqt: {stock_created_time.strftime('%d - %B %H:%M').lstrip('0')}")
+                f"📃 Link: {products_url}\n")
 
-        await message.answer_photo(
-            photo=stock_image_id,
-            caption=text,
+        await message.answer(
+            text=text
         )
         await message.answer(text="💬 Aksiyani o'shirilsinmi?\n"
                                   "O'chirish tumasini bosing 👇", reply_markup=delete_stock_keyboard)

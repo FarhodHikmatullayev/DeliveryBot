@@ -15,7 +15,7 @@ async def on_startup(dispatcher):
     await db.create()
     await set_default_commands(dispatcher)
 
-    asyncio.create_task(delete_stocks())
+    # asyncio.create_task(delete_stocks())
 
 
 if __name__ == '__main__':

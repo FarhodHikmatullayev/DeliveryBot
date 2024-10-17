@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
@@ -30,24 +28,17 @@ async def get_stocks(message: types.Message, state: FSMContext):
         stock_id = stocks_list[tr]
         stocks = await db.select_stock(id=stock_id)
     stock = stocks[0]
-    image = stock['image_id']
+    products_url = stock['products_url']
 
     product_name = stock['product_name']
-    description = stock['description']
-    time_limit = stock['time_limit']
-    created_at = stock['created_at']
-    limit = created_at + time_limit
-    limit = limit + timedelta(hours=5)
 
-    text = (f"🛒 Mahsulot: {product_name}\n"
-            f"📃 Izoh: {description}\n"
-            f"⏱️ Aksiya tugash vaqti: {(limit).strftime('%d - %B %H:%M').lstrip('0')}")
+    text = (f"📃 {products_url}\n"
+            f"🛒 Mahsulot: {product_name}\n")
 
     markup = await stocks_inline_keyboard(stock_tr=tr, stocks_list=stocks_list)
 
-    await message.answer_photo(
-        photo=image,
-        caption=text,
+    await message.answer(
+        text=text,
         reply_markup=markup
     )
 
@@ -74,23 +65,16 @@ async def next_or_previous_stocks(call: types.CallbackQuery, callback_data: dict
         stock_id = stocks_list[tr]
         stocks = await db.select_stock(id=stock_id)
     stock = stocks[0]
-    image = stock['image_id']
+    products_url = stock['products_url']
     product_name = stock['product_name']
-    description = stock['description']
-    time_limit = stock['time_limit']
-    created_at = stock['created_at']
-    limit = created_at + time_limit
-    limit = limit + timedelta(hours=5)
 
-    text = (f"🛒 Mahsulot: {product_name}\n"
-            f"📃 Izoh: {description}\n"
-            f"⏱️ Aksiya tugash vaqti: {limit.strftime('%d - %B %H:%M').lstrip('0')}")
+    text = (f"📃 {products_url}\n"
+            f"🛒 Mahsulot: {product_name}\n")
 
     markup = await stocks_inline_keyboard(stock_tr=tr, stocks_list=stocks_list)
 
-    await call.message.answer_photo(
-        photo=image,
-        caption=text,
+    await call.message.answer(
+        text=text,
         reply_markup=markup
     )
     await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)

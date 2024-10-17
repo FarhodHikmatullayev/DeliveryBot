@@ -1,12 +1,10 @@
-from datetime import datetime
-from email.policy import default
-
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from asyncpg.pgproto.pgproto import timedelta
 
 from keyboards.default.confirm_creating_order import confirm_order, confirm_phone_number, send_order
 from keyboards.default.main_menu import back_to_menu
+from keyboards.default.payment_methods import payment_methods_default_keyboard
 from loader import dp, db, bot
 from states.order_states import CreateOrderState
 
@@ -70,7 +68,7 @@ async def create_order(message: types.Message, state: FSMContext):
     )
 
 
-@dp.message_handler(text="Raqamni o'zgartirish", state=CreateOrderState.location)
+@dp.message_handler(text="Raqamni o'zgartirish", state=CreateOrderState.payment)
 async def get_phone(message: types.Message, state: FSMContext):
     await message.answer(text="📞 Telefon raqamingizni kiriting:\n"
                               "Misol: +998901234567",
@@ -78,14 +76,16 @@ async def get_phone(message: types.Message, state: FSMContext):
     await CreateOrderState.phone_number.set()
 
 
-@dp.message_handler(text="Davom etish 🔜", state=CreateOrderState.location)
+@dp.message_handler(text="Davom etish 🔜", state=CreateOrderState.payment)
 async def confirm_order_for_send(message: types.Message, state: FSMContext):
     data = await state.get_data()
     products = data.get("products")
     location = data.get("location")
     phone_number = data.get("phone_number")
+    payment = data.get('payment')
     text = (f"🏠 Manzilingiz: {location}\n"
             f"☎️ Telefon raqamingiz: {phone_number}\n"
+            f"💳 To'lov turi: {payment}\n"
             f"📦 Mahsulotlar ro'yxati 👇\n"
             f"{products}\n")
     await message.answer(text=text, reply_markup=back_to_menu)
@@ -93,24 +93,27 @@ async def confirm_order_for_send(message: types.Message, state: FSMContext):
                               "👇 Yuborish tugmasini bosing", reply_markup=send_order)
 
 
-@dp.message_handler(text="Yuborish 🚀", state=[CreateOrderState.phone_number, CreateOrderState.location])
+@dp.message_handler(text="Yuborish 🚀", state=[CreateOrderState.payment, CreateOrderState.phone_number])
 async def create_and_send_order(message: types.Message, state: FSMContext):
     data = await state.get_data()
     phone_number = data.get("phone_number")
     location = data.get("location")
     products = data.get("products")
+    payment = data.get('payment')
     user = await db.select_users(telegram_id=message.from_user.id)
     user = user[0]
 
     order = await db.create_order(
         user_id=user['id'],
         products=products,
+        payment=payment
     )
     text = (f"🆕 Yangi buyurtma\n"
             f"📦 Mahsulotlar:\n"
             f"{products}\n"
             f"🏠 Manzil: {location}\n"
             f"👤 Buyurtma egasi: {user['full_name']}\n"
+            f"💳 To'lov turi: {payment}\n"
             f"☎️ Tel: {phone_number}\n"
             f"⏱️ Vaqt: {(order['created_at'] + timedelta(hours=5)).strftime('%d/%m/%Y %H:%M')}\n")
     await bot.send_message(chat_id=-1002358586244, text=text)
@@ -125,6 +128,44 @@ async def create_and_send_order(message: types.Message, state: FSMContext):
 async def get_location(message: types.Message, state: FSMContext):
     location = message.text
     await state.update_data(location=location)
+    await message.answer(text="Qanday to'lov qilmoqchisiz❓\n"
+                              "To'lov turlaridan birini tanlang 👇", reply_markup=payment_methods_default_keyboard)
+    await CreateOrderState.payment.set()
+
+
+@dp.message_handler(state=CreateOrderState.phone_number)
+async def get_phone_number(message: types.Message, state: FSMContext):
+    phone_number = message.text
+    await state.update_data(phone_number=phone_number)
+    data = await state.get_data()
+    products = data.get("products")
+    location = data.get("location")
+    phone_number = data.get('phone_number')
+    payment = data.get('pament')
+    text = (f"🏠 Manzilingiz: {location}\n"
+            f"☎️ Telefon raqamingiz: {phone_number}\n"
+            f"💳 To'lov turi: {payment}\n"
+            f"📦 Mahsulotlar ro'yxati 👇\n"
+            f"{products}\n")
+    await message.answer(text=text, reply_markup=back_to_menu)
+    await message.answer(text="Buyurtmani yuborishni xohlaysizmi?\n"
+                              "👇 Yuborish tugmasini bosing", reply_markup=send_order)
+
+
+@dp.message_handler(state=CreateOrderState.payment)
+async def get_payment_option(message: types.Message, state: FSMContext):
+    payment = message.text
+    if payment == "Naqt":
+        payment_method = 'naqt'
+    elif payment == "Terminal (Uzcard)":
+        payment_method = 'terminal'
+    elif payment == "Click":
+        payment_method = 'click'
+    else:
+        await message.answer(text="Siz to'lov turlaridan birini tanlashingiz kerak 👇",
+                             reply_markup=payment_methods_default_keyboard)
+        return
+    await state.update_data(payment=payment_method)
     user_telegram_id = message.from_user.id
     users = await db.select_users(telegram_id=user_telegram_id)
     user = users[0]
@@ -137,19 +178,3 @@ async def get_location(message: types.Message, state: FSMContext):
     await message.answer(
         text=text, reply_markup=confirm_phone_number
     )
-
-
-@dp.message_handler(state=CreateOrderState.phone_number)
-async def get_phone_number(message: types.Message, state: FSMContext):
-    phone_number = message.text
-    await state.update_data(phone_number=phone_number)
-    data = await state.get_data()
-    products = data.get("products")
-    location = data.get("location")
-    text = (f"🏠 Manzilingiz: {location}\n"
-            f"☎️ Telefon raqamingiz: {phone_number}\n"
-            f"📦 Mahsulotlar ro'yxati 👇\n"
-            f"{products}\n")
-    await message.answer(text=text, reply_markup=back_to_menu)
-    await message.answer(text="Buyurtmani yuborishni xohlaysizmi?\n"
-                              "👇 Yuborish tugmasini bosing", reply_markup=send_order)

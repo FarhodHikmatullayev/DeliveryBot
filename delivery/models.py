@@ -24,11 +24,18 @@ class Users(models.Model):
 
 
 class Order(models.Model):
+    PAYMENT_METHODS = (
+        ('naqt', "Naqt"),
+        ('terminal', "Terminal"),
+        ('click', "Click"),
+    )
     user = models.ForeignKey(Users, on_delete=models.CASCADE, verbose_name="Buyurtmqa egasi", null=True, blank=True)
     products = models.TextField(null=True, blank=True, verbose_name="Mahsulotlar ro'yxati")
     created_at = models.DateTimeField(default=datetime.now(), verbose_name="Buyurtma berilgan vaqt", null=True,
                                       blank=True)
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Buyurtma o'zgartirilgan vaqt", null=True, blank=True)
+    payment = models.CharField(max_length=221, null=True, blank=True, choices=PAYMENT_METHODS,
+                               verbose_name="To'lov shakli")
 
     class Meta:
         db_table = 'orders'
@@ -41,9 +48,7 @@ class Order(models.Model):
 
 class Stock(models.Model):
     product_name = models.CharField(max_length=500, null=True, blank=True, verbose_name="Mahsulot nomi")
-    image_id = models.CharField(max_length=1000, null=True, blank=True, verbose_name="Rasm kodi")
-    description = models.TextField(null=True, blank=True)
-    time_limit = models.DurationField(null=True, blank=True, verbose_name="Aktiv vaqti")
+    products_url = models.CharField(max_length=1000, null=True, blank=True, verbose_name="Aksiya linki")
     created_at = models.DateTimeField(verbose_name="Aktsiya yaratilgan vaqt", null=True,
                                       blank=True)
 

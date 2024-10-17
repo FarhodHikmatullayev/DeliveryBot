@@ -5,3 +5,4 @@ class CreateOrderState(StatesGroup):
     products = State()
     location = State()
     phone_number = State()
+    payment = State()

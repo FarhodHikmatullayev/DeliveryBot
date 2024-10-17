@@ -89,9 +89,9 @@ class Database:
 
         # CRUD operations for Order model
 
-    async def create_order(self, user_id, products, created_at=datetime.now()):
-        sql = "INSERT INTO Orders (user_id, products, created_at) VALUES($1, $2, $3) RETURNING *"
-        return await self.execute(sql, user_id, products, created_at, fetchrow=True)
+    async def create_order(self, user_id, products, payment, created_at=datetime.now()):
+        sql = "INSERT INTO Orders (user_id, products, payment, created_at) VALUES($1, $2, $3, $4) RETURNING *"
+        return await self.execute(sql, user_id, products, payment, created_at, fetchrow=True)
 
     async def select_order(self, **kwargs):
         sql = "SELECT * FROM Orders WHERE "
@@ -117,9 +117,9 @@ class Database:
         return await self.execute(sql, order_id, execute=True)
 
     # CRUD operations for Stock model
-    async def create_stock(self, product_name, image_id, description, time_limit, created_at=datetime.now()):
-        sql = "INSERT INTO Stock (product_name, image_id, description, time_limit, created_at) VALUES($1, $2, $3, $4, $5) RETURNING *"
-        return await self.execute(sql, product_name, image_id, description, time_limit, created_at, fetchrow=True)
+    async def create_stock(self, product_name, products_url):
+        sql = "INSERT INTO Stock (product_name, products_url) VALUES($1, $2) RETURNING *"
+        return await self.execute(sql, product_name, products_url, fetchrow=True)
 
     async def select_stock(self, **kwargs):
         sql = "SELECT * FROM Stock WHERE "
