@@ -25,7 +25,7 @@ class Users(models.Model):
 
 class Order(models.Model):
     PAYMENT_METHODS = (
-        ('naqt', "Naqt"),
+        ('naqd', "Naqd"),
         ('terminal', "Terminal"),
         ('click', "Click"),
     )
