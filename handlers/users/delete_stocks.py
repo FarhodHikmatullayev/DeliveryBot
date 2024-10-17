@@ -15,9 +15,7 @@ from states.stocks_states import DeleteStockState
 @dp.message_handler(text="🗑️ O'chirish", state=DeleteStockState.product_name)
 async def delete_stock(message: types.Message, state: FSMContext):
     data = await state.get_data()
-    print('data', data)
     product_name = data.get("product_name")
-    print('product_name', product_name)
     stocks = await db.select_stock(product_name=product_name)
     if stocks:
         stock = stocks[0]
@@ -58,8 +56,7 @@ async def get_product_name(message: types.Message, state: FSMContext):
     product_name = message.text
     await state.update_data(product_name=product_name)
     data = await state.get_data()
-    print('data1', data)
-    print("product_name1", product_name)
+
 
     stocks = await db.select_stock(product_name=product_name)
     if stocks:

@@ -15,7 +15,6 @@ class Database:
         self.pool: Union[Pool, None] = None
 
     async def create(self):
-        print('DEVELOPMENT_MODE', DEVELOPMENT_MODE)
         if DEVELOPMENT_MODE:
             self.pool = await asyncpg.create_pool(
                 user=config.DB_USER,

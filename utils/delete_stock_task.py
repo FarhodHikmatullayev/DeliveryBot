@@ -19,15 +19,13 @@ async def delete_stocks():
             # deleting_time = deleting_time.astimezone(tz) + datetime.timedelta(hours=5)
 
             if deleting_time < datetime.datetime.now(tz):
-                print('deleting_time', deleting_time)
-                print('now', datetime.datetime.now(tz))
+
                 stock_id = stock['id']
                 stock_product_name = stock['product_name']
                 await db.delete_stock(stock_id=stock_id)
                 text = (f"🛍️ Mahsulot nomi: {stock_product_name} \n"
                         f"⏰ Aksiya muddati tugadi\n"
                         f"🗑️ Aksiya o'chirib yuborildi")
-                # print(text)
                 for admin in ADMINS:
                     try:
                         await bot.send_message(chat_id=admin, text=text)
